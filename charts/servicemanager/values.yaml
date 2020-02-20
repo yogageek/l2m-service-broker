@@ -1,0 +1,65 @@
+# Default values for the broker-skeleton
+# Image to use
+image:
+  repository: harbor.arfa.wise-paas.com/frbimo/mongodb-sm
+  tag: v1.0.0-34-ge7fdc73
+  # ImagePullPolicy; valid values are "IfNotPresent", "Never", and "Always"
+  pullPolicy: Always
+  pullSecrets: 
+    enabled: true
+    imagePullSecrets: mongodb-sm-regcred
+
+cronjob:
+  enabled: true
+  repository: harbor.arfa.wise-paas.com/frbimo/mongodb-cronjob
+  tag: v1.0.0-34-ge7fdc73
+    
+replicas: 1
+
+service:
+  type: NodePort
+  port: 8000
+
+# Run without TLS
+insecure: true
+
+# enable deprovision
+deprovision: true
+
+authenticate: false
+
+deployClusterServiceBroker: false
+
+verbose:
+  level: 5
+
+resources:
+  limits:
+    cpu: "150m"
+    memory: "64Mi"
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
+
+env:
+  enabled: true
+  configmap:
+    MONGODB_HOST1: "10.233.15.117"
+    MONGODB_HOST2: "10.233.24.234"
+    MONGODB_HOST3: "10.233.9.75"
+    MONGODB_PORT1: "27017"
+    MONGODB_PORT2: "27017"
+    MONGODB_PORT3: "27017"
+    MONGODB_USERNAME: "q5XFqg9DYgQnxUrqhuMthgUF"
+    MONGODB_PASSWORD: "KrafJt2sV2eV3GQSKm6BpXgV"
+    PSEUDO_ID: "abc-123"
+    SHARED_USE: "true"
+    DATABASE_AUTH: "admin"
+    OPS_PG_HOST1: "10.233.4.98"
+    OPS_PG_PORT1: "5432"
+    OPS_PG_USERNAME: "postgres"
+    OPS_PG_PASSWORD: "p9P5kTdrZYsFr9UPH8G8upus"
+    MAX_INSTANCE_PER_DB: "40" 
+    MAX_DAYS_PREDELETION_PERIOD: "1"
+    API_USERNAME: "admin"
+    API_PASSWORD: "admin"

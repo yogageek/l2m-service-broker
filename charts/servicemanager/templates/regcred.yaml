@@ -1,0 +1,10 @@
+{{- if .Values.image.pullSecrets.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-sm-regcred
+  namespace: {{ .Release.Namespace }}
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2hhcmJvci5hcmZhLndpc2UtcGFhcy5jb20iOnsidXNlcm5hbWUiOiJmcmJpbW8iLCJwYXNzd29yZCI6IlBAc3N3MHJsZCIsImVtYWlsIjoiZnJhbnNpc2N1cy5iaW1vQGFkdmFudGVjaC5jb20udHciLCJhdXRoIjoiWm5KaWFXMXZPbEJBYzNOM01ISnNaQT09In19fQ==
+type: kubernetes.io/dockerconfigjson
+{{- end }}

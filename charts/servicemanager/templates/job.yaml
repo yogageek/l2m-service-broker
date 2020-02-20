@@ -1,0 +1,46 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-mongodb-sm-job
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}--{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccount: {{ template "fullname" . }}-service
+          {{- if .Values.image.pullSecrets.enabled }}
+          imagePullSecrets: 
+          - name: {{ .Values.image.pullSecrets.imagePullSecrets }} 
+          {{- end }}
+          containers:
+          - name: {{ .Release.Name }}-mongodb-sm-job
+            image: {{ .Values.cronjob.repository }}:{{ .Values.cronjob.tag }}
+            imagePullPolicy: Always
+            command:
+            - /opt/servicemanager/mongodb-cronjob
+            args:
+            - -v
+            - "5"
+            - -alsologtostderr
+            - --host
+            - {{ .Values.env.configmap.OPS_PG_HOST1 }}
+            - --port
+            - {{ .Values.env.configmap.OPS_PG_PORT1 | quote }}
+            - --username
+            - {{ .Values.env.configmap.OPS_PG_USERNAME }}
+            - --password
+            - {{ .Values.env.configmap.OPS_PG_PASSWORD }}
+            - --dbauth
+            - "mongodb"
+            - --maxperiod
+            - {{ .Values.env.configmap.MAX_DAYS_PREDELETION_PERIOD |quote }}
+          restartPolicy: Never
+{{- end }}

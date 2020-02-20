@@ -1,0 +1,28 @@
+package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	var KafkaShellPort string = ":8001"
+	var KafkaShellIP string
+	// var KafkaBrokers string = os.Getenv("kafkabrokers") //"aaa:8080" or "aaa:8080,bbb:8000"
+
+	// var zk string //必須由env帶入 因為不知道port
+
+	// strs := strings.Split("aaa:8080,bbb:8000,cccc:9000", ",")
+	kafkaBrokers := strings.Split("aaa:8080", ",") //kafkaBrokers slice = [aaa:8000 bbb:8000]
+	fmt.Println(kafkaBrokers)
+	if len(kafkaBrokers) != 0 { //如果ip有值且正確
+		uri := strings.Split(kafkaBrokers[0], ":")
+		KafkaShellIP = uri[0] + KafkaShellPort
+	}
+	fmt.Println(KafkaShellIP)
+	fmt.Println(kafkaBrokers)
+
+	// for _, str := range strs {
+	// 	fmt.Println(str)
+	// }
+}

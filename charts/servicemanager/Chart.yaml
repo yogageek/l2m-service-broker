@@ -1,0 +1,3 @@
+name: mongodb-sm
+description: a chart for the service-manager-mongodb
+version: 0.1.2

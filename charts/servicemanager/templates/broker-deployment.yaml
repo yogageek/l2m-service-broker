@@ -1,0 +1,66 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      serviceAccount: {{ template "fullname" . }}-service
+      {{- if .Values.image.pullSecrets.enabled }}
+      imagePullSecrets: 
+      - name: {{ .Values.image.pullSecrets.imagePullSecrets }} 
+      {{- end }}
+      containers:
+      - name: service-manager-mongodb
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /opt/servicemanager/mongodb-sm
+        args:
+        - --port
+        - {{ .Values.service.port | quote }}
+        {{- if .Values.authenticate}}
+        - --authenticate-k8s-token
+        {{- end}}
+        {{- if .Values.insecure}}
+        - --insecure
+        {{- end}}
+        - -v
+        - {{ .Values.verbose.level | quote }}
+        - -alsologtostderr
+        {{- if .Values.deprovision}}
+        - --deprov
+        {{- end}}
+        {{- if .Values.env.enabled }}
+        envFrom:
+          - configMapRef:
+              name: {{ template "fullname" . }}
+        {{- end}}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.service.port }}
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+

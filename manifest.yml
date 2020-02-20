@@ -1,0 +1,27 @@
+---
+applications:
+  - name: mongodb-service-manager
+    memory: 128M
+    instances: 1
+    disk_quota: 256M
+    health-check-type: process
+    version: 0.0.1
+    buildpacks:
+      - binary_buildpack
+    command: ./servicemanager --insecure
+    env:
+      MONGODB_HOST1: mongodb-mongodb-replicaset-svc-0.wise-paas-db.svc.cluster.local
+      MONGODB_HOST2: mongodb-mongodb-replicaset-svc-1.wise-paas-db.svc.cluster.local
+      MONGODB_HOST3: mongodb-mongodb-replicaset-svc-2.wise-paas-db.svc.cluster.local
+      MONGODB_PORT1: "27017"
+      MONGODB_PORT2: "27017"
+      MONGODB_PORT3: "27017"
+      MONGODB_USERNAME: ""
+      MONGODB_PASSWORD: ""
+      PG_HOST1: "10.233.13.209"
+      PG_PORT1: "5432"
+      PG_USERNAME: "postgres"
+      PG_PASSWORD: "cXPG0vZDdZ"
+      PSEUDO_ID: "abc-123"
+      SHARED_USE: "true"
+      DATABASE: "admin"

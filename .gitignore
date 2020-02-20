@@ -1,0 +1,10 @@
+/bin
+/mongodb-sm
+/image/mongodb-sm
+/deployment.yaml
+/bench
+
+.project
+.idea/
+*.tmproj
+.vscode/
