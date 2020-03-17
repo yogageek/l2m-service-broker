@@ -40,10 +40,15 @@ func (s *mongoShared) Deprovision(request *osb.DeprovisionRequest, c *broker.Req
 		// strJSON := strings.NewReader(string(bytesJSON))
 		// glog.Info("strJSON->", strJSON)
 
+		//改版
 		//set delete id
 		instanceID := request.InstanceID
+		deleteAPI := "/v1/tenants/deletedByServiceBroker/"
+		reqpoint := fmt.Sprintf("http://%s%s%s", uri, deleteAPI, instanceID)
+
 		//調用添加header方法並放入request參數
-		req, _ := reqWithHeader("DELETE", fmt.Sprintf("http://%s/tenant/tenants/deletedByServiceBroker/%s", uri, instanceID), nil)
+		req, _ := reqWithHeader("DELETE", reqpoint, nil)
+		fmt.Println("deprovision request api:", reqpoint)
 		//送出請求
 		res, err := client.Do(req)
 		// This section will not handle any error, should pass error without mutate.

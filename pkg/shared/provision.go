@@ -63,12 +63,22 @@ func (s *mongoShared) Provision(request *osb.ProvisionRequest, c *broker.Request
 	glog.Info("strJSON->", strJSON)
 
 	//調用添加header方法並放入request參數
-	req, _ := reqWithHeader("POST", fmt.Sprintf("http://%s/tenant/tenants/createdByServiceBroker", uri), strJSON)
+	//外部
+	// req, _ := reqWithHeader("POST", fmt.Sprintf("http://%s/tenant/tenants/createdByServiceBroker", uri), strJSON)
+	//內部
+	var createAPI string
+	if os.Getenv("CREATE_API") == "" {
+		createAPI = "/v1/tenants/createdByServiceBroker"
+	}
+	reqpoint := fmt.Sprintf("http://%s%s", uri, createAPI)
+	fmt.Println("provision request api:", reqpoint)
+	req, _ := reqWithHeader("POST", reqpoint, strJSON)
 
 	//送出請求
 	res, err := client.Do(req)
 	// This section will not handle any error, should pass error without mutate.
 	if err != nil {
+		fmt.Println("res, err := client.Do(req) err:", err)
 		return nil, err
 	}
 
